@@ -5,7 +5,7 @@ import {
 } from '../interfaces/error.types';
 import httpStatusCodes from 'http-status-codes';
 
-export const handlerValidationError = (
+export const handleValidationError = (
   err: mongoose.Error.ValidationError
 ): TGenericErrorResponse => {
   const errorSources: TErrorSources[] = [];

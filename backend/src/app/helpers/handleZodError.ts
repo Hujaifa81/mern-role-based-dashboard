@@ -5,7 +5,7 @@ import {
 } from '../interfaces/error.types';
 import httpStatusCodes from 'http-status-codes';
 
-export const handlerZodError = (err: ZodError): TGenericErrorResponse => {
+export const handleZodError = (err: ZodError): TGenericErrorResponse => {
   const errorSources: TErrorSources[] = [];
 
   err.issues.forEach((issue: ZodIssue) => {

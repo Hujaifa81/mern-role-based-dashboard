@@ -1,10 +1,5 @@
-import { TGenericErrorResponse } from '../interfaces/error.types';
+import { MongoError, TGenericErrorResponse } from '../interfaces/error.types';
 import httpStatusCodes from 'http-status-codes';
-
-interface MongoError extends Error {
-  code?: number;
-  keyValue?: Record<string, unknown>;
-}
 
 export const handleDuplicateError = (
   err: MongoError
