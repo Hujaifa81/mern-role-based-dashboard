@@ -15,7 +15,7 @@ const googleCallbackController = catchAsync(
     const user = req.user;
 
     if (!user) {
-      throw new AppError(httpStatus.NOT_FOUND, 'User Not Found');
+      throw new AppError(httpStatus.UNAUTHORIZED, 'Authentication failed');
     }
 
     const tokenInfo = createUserToken(user);
