@@ -7,3 +7,4 @@ export * from './userTokens';
 export * from './sendResponse';
 export * from './setCookie';
 export * from './sendEmail';
+export * from './generateOTP';

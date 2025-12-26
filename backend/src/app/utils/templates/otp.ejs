@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your OTP Code</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7fa;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 30px;
+        text-align: center;
+        color: #ffffff;
+      }
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+      }
+      .header p {
+        font-size: 16px;
+        opacity: 0.9;
+      }
+      .content {
+        padding: 40px 30px;
+      }
+      .greeting {
+        font-size: 18px;
+        color: #333333;
+        margin-bottom: 20px;
+      }
+      .message {
+        font-size: 16px;
+        color: #555555;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+      .otp-container {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-radius: 10px;
+        padding: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+        border: 2px dashed #667eea;
+      }
+      .otp-label {
+        font-size: 14px;
+        color: #666666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        font-weight: 600;
+      }
+      .otp-code {
+        font-size: 42px;
+        font-weight: bold;
+        color: #667eea;
+        letter-spacing: 8px;
+        font-family: 'Courier New', monospace;
+        margin: 10px 0;
+      }
+      .expiry-notice {
+        font-size: 14px;
+        color: #e74c3c;
+        margin-top: 10px;
+        font-weight: 600;
+      }
+      .info-box {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+      }
+      .info-box p {
+        font-size: 14px;
+        color: #856404;
+        margin: 0;
+      }
+      .security-notice {
+        background-color: #f8d7da;
+        border-left: 4px solid #dc3545;
+        padding: 15px 20px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+      }
+      .security-notice p {
+        font-size: 14px;
+        color: #721c24;
+        margin: 0;
+        line-height: 1.5;
+      }
+      .footer {
+        background-color: #f8f9fa;
+        padding: 25px 30px;
+        text-align: center;
+        border-top: 1px solid #e9ecef;
+      }
+      .footer p {
+        font-size: 14px;
+        color: #6c757d;
+        margin-bottom: 8px;
+      }
+      .footer a {
+        color: #667eea;
+        text-decoration: none;
+      }
+      .divider {
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          #e0e0e0,
+          transparent
+        );
+        margin: 25px 0;
+      }
+      @media only screen and (max-width: 600px) {
+        .container {
+          border-radius: 0;
+        }
+        .header {
+          padding: 30px 20px;
+        }
+        .header h1 {
+          font-size: 24px;
+        }
+        .content {
+          padding: 30px 20px;
+        }
+        .otp-code {
+          font-size: 36px;
+          letter-spacing: 6px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🔐 Email Verification</h1>
+        <p>Your One-Time Password</p>
+      </div>
+
+      <div class="content">
+        <div class="greeting">Hello <%= name %>,</div>
+
+        <div class="message">
+          Thank you for registering! To complete your account verification,
+          please use the One-Time Password (OTP) below:
+        </div>
+
+        <div class="otp-container">
+          <div class="otp-label">Your OTP Code</div>
+          <div class="otp-code"><%= otp %></div>
+          <div class="expiry-notice">Expires in 2 minutes</div>
+        </div>
+
+        <div class="info-box">
+          <p>
+            <strong>Note:</strong> This code is valid for only 2 minutes.
+            After that, you'll need to request a new one.
+          </p>
+        </div>
+
+        <div class="security-notice">
+          <p>
+            <strong>Security Warning:</strong> Never share this code with
+            anyone. Our team will never ask you for this code. If you didn't
+            request this verification, please ignore this email or contact our
+            support team immediately.
+          </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="message">
+          If you have any questions or need assistance, feel free to reach out
+          to our support team.
+        </div>
+      </div>
+      </div>
+    </div>
+  </body>
+</html>
