@@ -8,3 +8,4 @@ export * from './sendResponse';
 export * from './setCookie';
 export * from './sendEmail';
 export * from './generateOTP';
+export * from './queryBuilder';
