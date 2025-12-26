@@ -8,13 +8,19 @@ export enum Status {
   SUSPENDED = 'SUSPENDED',
 }
 
+export interface IAuthProvider {
+  provider: 'google' | 'credentials'; // "Google", "Credential"
+  providerId: string;
+}
+
 export interface IUser {
   _id?: string;
   name: string;
   email: string;
-  password: string;
+  password?: string;
   role?: Role;
   status?: Status;
+  auths: IAuthProvider[];
   isVerified?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
