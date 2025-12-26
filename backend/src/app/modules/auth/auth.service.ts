@@ -4,14 +4,14 @@ import {
   createNewAccessTokenWithRefreshToken,
   generateToken,
   hashedPassword,
-  hashedPassword,
+  sendEmail,
   verifyToken,
 } from '../../utils';
 import { User } from '../user/user.model';
 import { AppError } from '../../errorHelpers.ts';
 import { envVars } from '../../config';
 import httpStatus from 'http-status-codes';
-import { Status } from '../user/user.interface';
+import { IAuthProvider, Status } from '../user/user.interface';
 
 const getNewAccessToken = async (refreshToken: string) => {
   const newAccessToken =
@@ -96,19 +96,15 @@ const forgotPassword = async (email: string) => {
 
   const resetUILink = `${envVars.FRONTEND_URL}/reset-password?userId=${isUserExist._id}&token=${resetToken}`;
 
-  // sendEmail({
-  //     to: isUserExist.email,
-  //     subject: "Password Reset",
-  //     templateName: "forgetPassword",
-  //     templateData: {
-  //         name: isUserExist.name,
-  //         resetUILink
-  //     }
-  // })
-
-  /**
-   * http://localhost:5173/reset-password?id=687f310c724151eb2fcf0c41&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODdmMzEwYzcyNDE1MWViMmZjZjBjNDEiLCJlbWFpbCI6InNhbWluaXNyYXI2QGdtYWlsLmNvbSIsInJvbGUiOiJVU0VSIiwiaWF0IjoxNzUzMTY2MTM3LCJleHAiOjE3NTMxNjY3Mzd9.LQgXBmyBpEPpAQyPjDNPL4m2xLF4XomfUPfoxeG0MKg
-   */
+  sendEmail({
+    to: isUserExist.email,
+    subject: 'Password Reset',
+    templateName: 'forgetPassword',
+    templateData: {
+      name: isUserExist.name,
+      resetUILink,
+    },
+  });
 };
 
 const setPassword = async (userId: string, plainPassword: string) => {

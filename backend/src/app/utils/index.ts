@@ -6,3 +6,4 @@ export * from './bcryptHelper';
 export * from './userTokens';
 export * from './sendResponse';
 export * from './setCookie';
+export * from './sendEmail';
