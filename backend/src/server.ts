@@ -1,6 +1,6 @@
 import { Server } from 'http';
 import mongoose from 'mongoose';
-import { envVars } from './app/config';
+import { connectRedis, envVars } from './app/config';
 import app from './app';
 
 let server: Server;
@@ -20,6 +20,7 @@ const startServer = async () => {
 };
 
 (async () => {
+  await connectRedis();
   await startServer();
 })();
 

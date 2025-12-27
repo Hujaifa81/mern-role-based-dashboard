@@ -7,6 +7,7 @@ import { corsOptions, rootResponse } from './app/utils';
 import { globalErrorHandler, notFound } from './app/middlewares';
 import { envVars } from './app/config';
 import { router } from './app/routes';
+import './app/config/passport';
 
 const app = express();
 

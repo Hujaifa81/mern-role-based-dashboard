@@ -19,6 +19,7 @@ export interface IUser {
   email: string;
   password?: string;
   role?: Role;
+  picture?: string;
   status?: Status;
   auths: IAuthProvider[];
   isVerified?: boolean;
