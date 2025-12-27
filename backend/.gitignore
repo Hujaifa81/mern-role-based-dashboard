@@ -49,8 +49,13 @@ pids/
 # TypeScript cache
 *.tsbuildinfo
 
+# Documentation files
+*.md
+!README.md
+!INTERVIEW_DEMO_GUIDE.md
+
+
 # Temporary files
 tmp/
 temp/
 
-*.md
