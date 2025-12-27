@@ -3,10 +3,23 @@ import { catchAsync, sendResponse } from '../../utils';
 import httpStatus from 'http-status-codes';
 import { IJwtPayload } from '../../interfaces';
 import { UserService } from './user.service';
+import { logActivity } from '../../utils/activityLogger';
+import { ActivityType } from '../activityLog/activityLog.interface';
 
 const createUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    const decodedToken = req.user as IJwtPayload;
     const user = await UserService.createUser(req.body);
+
+    // Log user creation activity
+    await logActivity(
+      decodedToken.userId,
+      ActivityType.USER_CREATED,
+      `Admin created user: ${user.email}`,
+      req,
+      user._id.toString(),
+      { email: user.email, role: user.role }
+    );
 
     sendResponse(res, {
       success: true,
@@ -26,6 +39,34 @@ const updateUser = catchAsync(
       userId,
       payload,
       decodedToken as IJwtPayload
+    );
+
+    // Determine activity type based on what was updated
+    let activityType = ActivityType.USER_UPDATED;
+    let description = 'User profile updated';
+
+    if (payload.role) {
+      activityType = ActivityType.ROLE_CHANGED;
+      description = `User role changed to ${payload.role}`;
+    } else if (payload.status === 'SUSPENDED') {
+      activityType = ActivityType.USER_SUSPENDED;
+      description = 'User account suspended';
+    } else if (payload.status === 'ACTIVE') {
+      activityType = ActivityType.USER_ACTIVATED;
+      description = 'User account activated';
+    } else if (payload.isVerified) {
+      activityType = ActivityType.EMAIL_VERIFIED;
+      description = 'Email verified by admin';
+    }
+
+    // Log the activity
+    await logActivity(
+      (decodedToken as IJwtPayload).userId,
+      activityType,
+      description,
+      req,
+      userId,
+      payload
     );
 
     sendResponse(res, {

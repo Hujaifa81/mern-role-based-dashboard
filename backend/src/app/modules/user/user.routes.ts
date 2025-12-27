@@ -20,3 +20,5 @@ router.patch(
   checkAuth(...Object.values(Role)),
   UserController.updateUser
 );
+
+export const UserRoutes = router;

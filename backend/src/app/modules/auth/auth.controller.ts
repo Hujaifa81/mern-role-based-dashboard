@@ -11,6 +11,8 @@ import { AppError } from '../../errorHelpers.ts';
 import { AuthService } from './auth.service';
 import { IJwtPayload } from '../../interfaces';
 import passport from 'passport';
+import { logActivity } from '../../utils/activityLogger';
+import { ActivityType } from '../activityLog/activityLog.interface';
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +42,13 @@ const credentialsLogin = catchAsync(
         const { password: _pass, ...rest } = user.toObject();
 
         setCookie(res, userTokens);
+
+        await logActivity(
+          user._id.toString(),
+          ActivityType.USER_LOGIN,
+          `User ${user.email} logged in successfully`,
+          req
+        );
 
         sendResponse(res, {
           success: true,
@@ -74,6 +83,14 @@ const googleCallbackController = catchAsync(
 
     setCookie(res, tokenInfo);
 
+    // Log login activity
+    await logActivity(
+      (user as any)._id.toString(),
+      ActivityType.USER_LOGIN,
+      `User logged in via Google OAuth`,
+      req
+    );
+
     res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`);
   }
 );
@@ -107,12 +124,19 @@ const changePassword = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const newPassword = req.body.newPassword;
     const oldPassword = req.body.oldPassword;
-    const decodedToken = req.user;
+    const decodedToken = req.user as IJwtPayload;
 
     await AuthService.changePassword(
       oldPassword,
       newPassword,
       decodedToken as IJwtPayload
+    );
+
+    await logActivity(
+      decodedToken!.userId,
+      ActivityType.PASSWORD_CHANGED,
+      'User changed their password',
+      req
     );
 
     sendResponse(res, {
@@ -129,6 +153,14 @@ const resetPassword = catchAsync(
     const { token, newPassword, userId } = req.body;
 
     await AuthService.resetPassword(token, newPassword, userId);
+
+    // Log password reset activity
+    await logActivity(
+      userId,
+      ActivityType.PASSWORD_RESET,
+      'User reset their password via email',
+      req
+    );
 
     sendResponse(res, {
       success: true,
@@ -172,6 +204,8 @@ const setPassword = catchAsync(
 
 const logout = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
+    const userId = (req.user as IJwtPayload)?.userId;
+
     const cookieOptions = {
       httpOnly: true,
       secure: envVars.NODE_ENV === 'production',
@@ -204,6 +238,16 @@ const logout = catchAsync(
           console.error('Passport logout error:', err);
         }
       });
+    }
+
+    // Log logout activity
+    if (userId) {
+      await logActivity(
+        userId,
+        ActivityType.USER_LOGOUT,
+        'User logged out',
+        req
+      );
     }
 
     sendResponse(res, {
