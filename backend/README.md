@@ -571,8 +571,6 @@ Built with ❤️ for demonstrating full-stack development skills
 For questions or issues:
 - Open an issue on GitHub
 - Check the [API Documentation](./API_ENDPOINTS.md)
-- Review the [Interview Demo Guide](./INTERVIEW_DEMO_GUIDE.md)
-
 ---
 
 ## 🎓 Learning Resources
@@ -589,12 +587,6 @@ This project demonstrates:
 - File upload handling
 - Email service integration
 - Activity logging and auditing
-
-Perfect for:
-- Job interviews
-- Portfolio projects
-- Learning modern backend development
-- Understanding production-ready architecture
 
 ---
 
