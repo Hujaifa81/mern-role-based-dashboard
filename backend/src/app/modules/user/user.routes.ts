@@ -14,8 +14,11 @@ router.post(
 router.get('/all-users', checkAuth(Role.ADMIN), UserController.getAllUsers);
 router.get('/me', checkAuth(...Object.values(Role)), UserController.getMe);
 router.get('/:id', checkAuth(Role.ADMIN), UserController.getSingleUser);
+import { multerUpload } from '../../config';
+
 router.patch(
   '/:id',
+  multerUpload.single('picture'),
   validateRequest(updateUserZodSchema),
   checkAuth(...Object.values(Role)),
   UserController.updateUser

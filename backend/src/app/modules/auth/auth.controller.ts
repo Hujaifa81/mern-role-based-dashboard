@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from 'express';
 import {
   catchAsync,
@@ -13,12 +14,13 @@ import { IJwtPayload } from '../../interfaces';
 import passport from 'passport';
 import { logActivity } from '../../utils/activityLogger';
 import { ActivityType } from '../activityLog/activityLog.interface';
+import { IUser } from '../user/user.interface';
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate(
       'local',
-      async (err: Error | null, user: any, info: { message?: string }) => {
+      async (err: Error | null, user: IUser, info: { message?: string }) => {
         if (err) {
           return next(
             new AppError(
@@ -37,19 +39,26 @@ const credentialsLogin = catchAsync(
           );
         }
 
+        // If user is not verified, do not set cookies or tokens, just return user info
+        if (!user.isVerified) {
+          const { password: _pass, ...rest } = (user as any).toObject();
+          return sendResponse(res, {
+            success: false,
+            statusCode: httpStatus.UNAUTHORIZED,
+            message: 'User is not verified',
+            data: { user: rest },
+          });
+        }
+
         const userTokens = await createUserToken(user);
-
-        const { password: _pass, ...rest } = user.toObject();
-
+        const { password: _pass, ...rest } = (user as any).toObject();
         setCookie(res, userTokens);
-
         await logActivity(
-          user._id.toString(),
+          (user as any)._id.toString(),
           ActivityType.USER_LOGIN,
           `User ${user.email} logged in successfully`,
           req
         );
-
         sendResponse(res, {
           success: true,
           statusCode: httpStatus.OK,
@@ -73,7 +82,7 @@ const googleCallbackController = catchAsync(
       redirectTo = redirectTo.slice(1);
     }
 
-    const user = req.user;
+    const user = req.user as IUser;
 
     if (!user) {
       throw new AppError(httpStatus.UNAUTHORIZED, 'Authentication failed');
@@ -85,13 +94,24 @@ const googleCallbackController = catchAsync(
 
     // Log login activity
     await logActivity(
-      (user as any)._id.toString(),
+      user._id!.toString(),
       ActivityType.USER_LOGIN,
       `User logged in via Google OAuth`,
       req
     );
 
-    res.redirect(`${envVars.FRONTEND_URL}/${redirectTo}`);
+    // Determine user role and default dashboard
+    const userRole = user.role || 'USER';
+    let dashboardPath = '/';
+    if (userRole === 'ADMIN') {
+      dashboardPath = 'admin/dashboard';
+    } else if (userRole === 'USER') {
+      dashboardPath = 'dashboard';
+    }
+
+    // If no redirectTo, use dashboardPath
+    const finalRedirect = redirectTo ? redirectTo : dashboardPath;
+    res.redirect(`${envVars.FRONTEND_URL}/${finalRedirect}`);
   }
 );
 

@@ -49,7 +49,7 @@ const resetPassword = async (
 ) => {
   const decodedToken = verifyToken(
     token,
-    envVars.JWT_ACCESS_SECRET
+    envVars.RESET_PASS_TOKEN
   ) as IJwtPayload;
 
   if (decodedToken.userId !== userId) {
@@ -90,7 +90,7 @@ const forgotPassword = async (email: string) => {
 
   const resetToken = generateToken(
     jwtPayload as IJwtPayload,
-    envVars.JWT_ACCESS_SECRET,
+    envVars.RESET_PASS_TOKEN,
     '15m'
   );
 

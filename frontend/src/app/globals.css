@@ -1,3 +1,10 @@
+/* Universal cursor pointer for all interactive buttons and links */
+button:not([disabled]):hover,
+a[href]:hover,
+[role="button"]:hover,
+.btn:hover {
+  cursor: pointer;
+}
 @import "tailwindcss";
 @import "tw-animate-css";
 

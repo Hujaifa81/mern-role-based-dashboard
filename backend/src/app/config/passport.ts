@@ -9,6 +9,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { User } from '../modules/user/user.model';
 import { Role, Status } from '../modules/user/user.interface';
 import { envVars } from './envVars';
+import { OTPService } from '../modules/otp/otp.service';
 
 passport.use(
   new LocalStrategy(
@@ -18,14 +19,18 @@ passport.use(
     },
     async (email: string, password: string, done) => {
       try {
-        const isUserExist = await User.findOne({ email });
-
+        console.log('Local Strategy called for email:', email);
+        const isUserExist = await User.findOne({ email: email.trim() });
+        console.log(isUserExist);
         if (!isUserExist) {
           return done(null, false, { message: 'User does not exist' });
         }
 
         if (!isUserExist.isVerified) {
-          return done(null, false, { message: 'User is not verified' });
+          await OTPService.sendOTP(isUserExist.email, isUserExist.name);
+          return done(null, false, {
+            message: `User is not verified.email:${isUserExist.email}.name:${isUserExist.name}`,
+          });
         }
 
         if (isUserExist.status === Status.SUSPENDED) {
@@ -51,7 +56,7 @@ passport.use(
         );
 
         if (!isPasswordMatched) {
-          return done(null, false, { message: 'Password does not match' });
+          return done(null, false, { message: 'Invalid Credential' });
         }
 
         return done(null, isUserExist);
@@ -100,6 +105,10 @@ passport.use(
             name: profile.displayName,
             role: Role.USER,
             isVerified: true,
+            picture:
+              profile.photos && profile.photos[0] && profile.photos[0].value
+                ? profile.photos[0].value
+                : undefined,
             auths: [
               {
                 provider: 'google',

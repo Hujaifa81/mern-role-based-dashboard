@@ -6,13 +6,16 @@ import httpStatus from 'http-status-codes';
 import { AppError } from '../errorHelpers.ts';
 
 const transporter = nodemailer.createTransport({
-  secure: true,
+  host: envVars.EMAIL_SENDER.SMTP_HOST,
+  port: Number(envVars.EMAIL_SENDER.SMTP_PORT),
+  secure: false, // Use false for port 587
   auth: {
     user: envVars.EMAIL_SENDER.SMTP_USER,
     pass: envVars.EMAIL_SENDER.SMTP_PASS,
   },
-  port: Number(envVars.EMAIL_SENDER.SMTP_PORT),
-  host: envVars.EMAIL_SENDER.SMTP_HOST,
+  tls: {
+    rejectUnauthorized: false,
+  },
 });
 
 interface SendEmailOptions {

@@ -71,7 +71,7 @@ const getActivityLogsByType = catchAsync(
 
 const getRecentActivityLogs = catchAsync(
   async (req: Request, res: Response) => {
-    const limit = parseInt(req.query.limit as string) || 10;
+    const limit = parseInt(req.query.limit as string) || 5;
     const result = await ActivityLogService.getRecentActivityLogs(limit);
 
     sendResponse(res, {

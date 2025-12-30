@@ -14,10 +14,21 @@ export class QueryBuilder<T> {
     const { startDate, endDate } = this.query;
     const isDateOnly = (s?: string) => !!s && /^\d{4}-\d{2}-\d{2}$/.test(s);
 
-    const mkStart = (s: string) =>
-      isDateOnly(s) ? new Date(`${s}T00:00:00`) : new Date(s);
-    const mkEnd = (s: string) =>
-      isDateOnly(s) ? new Date(`${s}T23:59:59.999`) : new Date(s);
+    // Use local time for start and end of day
+    const mkStart = (s: string) => {
+      if (isDateOnly(s)) {
+        const [year, month, day] = s.split('-').map(Number);
+        return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0)); // UTC
+      }
+      return new Date(s);
+    };
+    const mkEnd = (s: string) => {
+      if (isDateOnly(s)) {
+        const [year, month, day] = s.split('-').map(Number);
+        return new Date(Date.UTC(year, month - 1, day, 23, 59, 59, 999)); // UTC
+      }
+      return new Date(s);
+    };
 
     if (startDate && endDate) {
       const start = mkStart(startDate);
@@ -28,13 +39,30 @@ export class QueryBuilder<T> {
       return this;
     }
 
+    // If only startDate is provided, set endDate to today (end of day)
     if (startDate && !endDate) {
       const start = mkStart(startDate);
-      this.modelQuery = this.modelQuery.find({ [dateField]: { $gte: start } });
+      const today = new Date();
+      const end = new Date(
+        Date.UTC(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          23,
+          59,
+          59,
+          999
+        )
+      );
+      this.modelQuery = this.modelQuery.find({
+        [dateField]: { $gte: start, $lte: end },
+      });
       return this;
     }
     if (!startDate && endDate) {
       const end = mkEnd(endDate);
+      // eslint-disable-next-line no-console
+      console.log('[QueryBuilder.dateRange]', { endDate, end });
       this.modelQuery = this.modelQuery.find({ [dateField]: { $lte: end } });
       return this;
     }
@@ -46,6 +74,9 @@ export class QueryBuilder<T> {
     for (const field of excludeField) {
       delete filter[field];
     }
+    // Remove 'role' and 'status' if value is 'all'
+    if (filter.role === 'all') delete filter.role;
+    if (filter.status === 'all') delete filter.status;
     this.modelQuery = this.modelQuery.find(filter);
     return this;
   }
@@ -68,6 +99,8 @@ export class QueryBuilder<T> {
 
   sort(): this {
     const sort = this.query.sort || '-createdAt';
+    // eslint-disable-next-line no-console
+    console.log('[QueryBuilder.sort]', sort);
     this.modelQuery = this.modelQuery.sort(sort);
 
     return this;

@@ -15,7 +15,9 @@ interface EnvConfig {
   GOOGLE_CALLBACK_URL: string;
   EXPRESS_SESSION_SECRET: string;
   WHITE_LIST_ORIGIN: string;
+  COOKIE_DOMAIN: string;
   FRONTEND_URL: string;
+  RESET_PASS_TOKEN: string;
   CLOUDINARY: {
     CLOUDINARY_CLOUD_NAME: string;
     CLOUDINARY_API_KEY: string;
@@ -48,7 +50,9 @@ const loadEnvVariables = (): EnvConfig => {
     'GOOGLE_CALLBACK_URL',
     'EXPRESS_SESSION_SECRET',
     'WHITE_LIST_ORIGIN',
+    'COOKIE_DOMAIN',
     'FRONTEND_URL',
+    'RESET_PASS_TOKEN',
     'CLOUDINARY_CLOUD_NAME',
     'CLOUDINARY_API_KEY',
     'CLOUDINARY_API_SECRET',
@@ -67,6 +71,7 @@ const loadEnvVariables = (): EnvConfig => {
   });
 
   return {
+    RESET_PASS_TOKEN: process.env.RESET_PASS_TOKEN as string,
     PORT: process.env.PORT as string,
     DB_URL: process.env.DB_URL as string,
     NODE_ENV: process.env.NODE_ENV as 'development' | 'production',
@@ -81,6 +86,7 @@ const loadEnvVariables = (): EnvConfig => {
     EXPRESS_SESSION_SECRET: process.env.EXPRESS_SESSION_SECRET as string,
     WHITE_LIST_ORIGIN: process.env.WHITE_LIST_ORIGIN as string,
     FRONTEND_URL: process.env.FRONTEND_URL as string,
+    COOKIE_DOMAIN: process.env.COOKIE_DOMAIN as string,
 
     CLOUDINARY: {
       CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME as string,

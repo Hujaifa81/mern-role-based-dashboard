@@ -5,26 +5,24 @@ import { IJwtPayload } from '../../interfaces';
 import { UserService } from './user.service';
 import { logActivity } from '../../utils/activityLogger';
 import { ActivityType } from '../activityLog/activityLog.interface';
+import { OTPService } from '../otp/otp.service';
 
 const createUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
-    const decodedToken = req.user as IJwtPayload;
     const user = await UserService.createUser(req.body);
 
-    // Log user creation activity
-    await logActivity(
-      decodedToken.userId,
-      ActivityType.USER_CREATED,
-      `Admin created user: ${user.email}`,
-      req,
-      user._id.toString(),
-      { email: user.email, role: user.role }
-    );
+    // Automatically send OTP after user registration
+    try {
+      await OTPService.sendOTP(user.email, user.name);
+    } catch (error) {
+      console.error('Failed to send OTP:', error);
+      // Don't fail the registration if OTP sending fails
+    }
 
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
-      message: 'User Created Successfully',
+      message: 'User Created Successfully. OTP sent to your email.',
       data: user,
     });
   }
@@ -35,6 +33,12 @@ const updateUser = catchAsync(
     const userId = req.params.id;
     const decodedToken = req.user;
     const payload = req.body;
+
+    // If file uploaded, set picture to Cloudinary URL
+    if (req.file && req.file.path) {
+      payload.picture = req.file.path;
+    }
+
     const user = await UserService.updateUser(
       userId,
       payload,

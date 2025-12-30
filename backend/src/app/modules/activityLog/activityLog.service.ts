@@ -116,7 +116,7 @@ const getActivityLogsByType = async (
   };
 };
 
-const getRecentActivityLogs = async (limit: number = 10) => {
+const getRecentActivityLogs = async (limit: number = 5) => {
   const logs = await ActivityLog.find()
     .populate('user', 'name email role')
     .populate('targetUser', 'name email')
