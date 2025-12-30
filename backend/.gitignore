@@ -50,8 +50,6 @@ pids/
 *.tsbuildinfo
 
 
-
-
 # Temporary files
 tmp/
 temp/
