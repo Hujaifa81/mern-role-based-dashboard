@@ -4,8 +4,8 @@
 
 ## 🌐 Live Demo & Admin Credentials
 
-- **Backend Deploy:** [live Link](https://dashboard-backend-five-eosin.vercel.app)
-- **Frontend Deploy:** [Live Link](https://dashboard-frontend-tau-lime.vercel.app/)
+- **Backend Deploy:** [Live Link](https://dashboard-backend-five-eosin.vercel.app)
+- **Frontend Deploy:** [Live Link](https://dashboard-frontend-tau-lime.vercel.app)
 
 **Admin Credentials:**
 - Email: abuhojaifa123@gmail.com
@@ -189,5 +189,5 @@ See [backend/PROJECT_SUMMARY.md](backend/PROJECT_SUMMARY.md) for a deep-dive int
 ---
 
 ## 🧑‍💻 Author & License
-- Built by [Md Abu Hujaifa]
+- Built by Md Abu Hujaifa
 - MIT License
